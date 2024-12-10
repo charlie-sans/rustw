@@ -17,10 +17,10 @@ Project: text
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
 int main() {
-    char *message = "Hello, World! this is from resonite so that i know it works";
+    char *message = "Hello, World! KodeRunner 3.0 is allmost here!";
     int i;
 
-    // Seed the random number generator
+    // See the random number generator
     srand(time(NULL));
 
     for (i = 0; message[i] != '\0'; i++) {
@@ -44,7 +44,7 @@ int main() {
         fflush(stdout); // Ensure the character is printed immediately
 
         // Pause for 0.5 seconds (500000 microseconds)
-        usleep(5000); // usleep is in microseconds, 500000 microseconds = 0.5 seconds
+        usleep(500000); // usleep is in microseconds, 500000 microseconds = 0.5 seconds
     }
 
     // Reset color back to normal at the end
@@ -52,5 +52,3 @@ int main() {
 
     return 0;
 }
-ggggggggggggggggggggggggggggggggggжшжçwç
-

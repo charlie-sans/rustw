@@ -1,13 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
-using System.Threading.Tasks;
-using KodeRunner;
 using System.IO;
 using System.Text.RegularExpressions;
-
-
+using System.Threading.Tasks;
+using KodeRunner;
 namespace KodeRunner
 {
    #region StartBuildProcess
@@ -72,7 +69,7 @@ namespace KodeRunner
                     int read = await _process.StandardOutput.BaseStream.ReadAsync(buffer, 0, buffer.Length);
                     if (read > 0)
                     {
-                        string output = Encoding.UTF8.GetString(buffer, 0, read);
+                        string output = System.Text.Encoding.UTF8.GetString(buffer, 0, read);
                         OnOutput?.Invoke(output);
                     }
                 }
@@ -81,11 +78,13 @@ namespace KodeRunner
 
         public void SetupCodeDir()
         {
-            string Cpath = Path.Combine(Directory.GetCurrentDirectory(), Core.RootDir, Core.CodeDir);
-            string Bpath = Path.Combine(Directory.GetCurrentDirectory(), Core.RootDir, Core.BuildDir);
-            string Tpath = Path.Combine(Directory.GetCurrentDirectory(), Core.RootDir, Core.TempDir);
-            string Opath = Path.Combine(Directory.GetCurrentDirectory(), Core.RootDir, Core.OutputDir);
-            string Lpath = Path.Combine(Directory.GetCurrentDirectory(), Core.RootDir, Core.LogDir);
+            string Cpath = Path.Combine(Core.RootDir, Core.CodeDir);
+            string Bpath = Path.Combine(Core.RootDir, Core.BuildDir);
+            string Tpath = Path.Combine(Core.RootDir, Core.TempDir);
+            string Opath = Path.Combine(Core.RootDir, Core.OutputDir);
+            string Lpath = Path.Combine(Core.RootDir, Core.LogDir);
+            string Rpath = Path.Combine(Core.RootDir, Core.RunnableDir);
+
             if (!Directory.Exists(Cpath))
             {
                 Directory.CreateDirectory(Cpath);
@@ -105,6 +104,10 @@ namespace KodeRunner
             if (!Directory.Exists(Lpath))
             {
                 Directory.CreateDirectory(Lpath);
+            }
+            if (!Directory.Exists(Rpath))
+            {
+                Directory.CreateDirectory(Rpath);
             }
             
 

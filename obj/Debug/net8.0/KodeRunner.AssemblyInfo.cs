@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("KodeRunner")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+240c403770e140b1c3fed391ed5faa3ffb95024c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ce7d538391dd1d6d5e623067071fef3865d38d3b")]
 [assembly: System.Reflection.AssemblyProductAttribute("KodeRunner")]
 [assembly: System.Reflection.AssemblyTitleAttribute("KodeRunner")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

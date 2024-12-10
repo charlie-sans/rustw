@@ -59,6 +59,11 @@ namespace KodeRunner
         /// <summary>
         ///  Prints all runnables to the console for debugging
         /// </summary>
+        /// 
+        /// 
+        
+
+         
         public void print()
         {
             // loop over the dictionary and print the language, name and priority of each runnable
@@ -69,6 +74,37 @@ namespace KodeRunner
                 Console.WriteLine($"Language: {runnable.Key}, Name: {runnable.Value.Method.Name}, Priority: {attr?.Priority ?? 0}");
             }
         }
+
+        public void LoadRunnablesFromDirectory(string path)
+        {
+            var dllFiles = Directory.GetFiles(path, "*.dll");
+            foreach (var dllPath in dllFiles)
+            {
+                try
+                {
+                    var assembly = Assembly.LoadFrom(dllPath);
+                    var runnables = assembly.GetTypes()
+                        .Where(type => typeof(IRunnable).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
+                        .Select(static type => (IRunnable)Activator.CreateInstance(type))
+                        .ToList();
+
+                    foreach (var runnable in runnables)
+                    {
+                        var attribute = runnable.GetType().GetCustomAttribute<RunnableAttribute>();
+                        if (attribute != null)
+                        {
+                            RegisterRunnable(attribute.Name, runnable.Name, runnable.Execute, attribute.Priority);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error loading assembly {dllPath}: {ex.Message}");
+                }
+            }
+        }
+
+
         /// <summary>
         ///  Loads all runnables from the current app domain
         /// </summary>

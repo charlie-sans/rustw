@@ -41,7 +41,7 @@ namespace KodeRunner
 
             terminalProcess.OnOutput += async (output) =>
             {
-                Console.WriteLine(output);
+               
                 if (pmsWebSocket != null && pmsWebSocket.State == WebSocketState.Open)
                 {
                     var bytes = Encoding.UTF8.GetBytes(output);
@@ -88,6 +88,27 @@ namespace KodeRunner
             Console.WriteLine($"Project Name: {settings.ProjectName}");
             Console.WriteLine($"Project Path: {settings.ProjectPath}");
 
+            var terminalProcess = new TerminalProcess();
+
+            // Capture the PMS WebSocket from settings
+            WebSocket pmsWebSocket = settings.PmsWebSocket;
+
+            terminalProcess.OnOutput += async (output) =>
+            {
+                
+                if (pmsWebSocket != null && pmsWebSocket.State == WebSocketState.Open)
+                {
+                    var bytes = Encoding.UTF8.GetBytes(output);
+                    await pmsWebSocket.SendAsync(new ArraySegment<byte>(bytes), WebSocketMessageType.Text, true, CancellationToken.None);
+                }
+            };
+
+            var codePath = Path.Combine(Core.RootDir, Core.CodeDir, settings.ProjectName);
+            var mainFilePath = Path.Combine(codePath, settings.Main_File);
+            var runCommand = $"python \"{mainFilePath}\"";
+            Console.WriteLine(runCommand);
+
+            terminalProcess.ExecuteCommand(runCommand).Wait();
         }
     }
 
@@ -111,7 +132,7 @@ namespace KodeRunner
 
             terminalProcess.OnOutput += async (output) =>
             {
-                Console.WriteLine(output);
+                
                 if (pmsWebSocket != null && pmsWebSocket.State == WebSocketState.Open)
                 {
                     var bytes = Encoding.UTF8.GetBytes(output);
@@ -123,16 +144,16 @@ namespace KodeRunner
             var outputFilePath = Path.Combine(codePath, settings.Output);
             var mainFilePath = Path.Combine(codePath, settings.Main_File);
 
-            var buildCommand = $"clang -o \"{outputFilePath}\" \"{mainFilePath}\"";
-            Console.WriteLine($"Build command: {buildCommand}");
-
-            // Execute the build command
+            // Add some color to the output
+            var buildCommand = $"echo '\u001b[35m<color=green>Building C project...\u001b[0m' && " +
+                             $"clang -o \"{outputFilePath}\" \"{mainFilePath}\"";
+            
             terminalProcess.ExecuteCommand(buildCommand).Wait();
 
             if (settings.Run_On_Build)
             {
-                // Run the project
-                var runCommand = $"\"{outputFilePath}\"";
+                var runCommand = $"echo '\u001b[32mRunning program...\u001b[0m' && " +
+                               $"\"{outputFilePath}\"";
                 terminalProcess.ExecuteCommand(runCommand).Wait();
             }
         }

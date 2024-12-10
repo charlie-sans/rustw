@@ -2,14 +2,39 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Text;
+using System.Collections.Concurrent;
 
 namespace KodeRunner
 {
-    public class TerminalProcess
+    public class TerminalProcess: IAsyncDisposable
     {
         #pragma warning disable CS8618
         public event Action<string> OnOutput;
         #pragma warning restore CS8618
+
+
+        // funciton to clear the buffer when the process is done
+        public async Task ClearBuffer()
+        {
+            await Task.Delay(1000);
+            OnOutput?.Invoke("\n");
+        }
+
+        // Add static process tracking
+        private static ConcurrentDictionary<int, Process> ActiveProcesses = new ConcurrentDictionary<int, Process>();
+
+        private void SendOutput(string output)
+        {
+            if (string.IsNullOrEmpty(output)) return;
+            var parsedOutput = TerminalCodeParser.ParseToResonite(output);
+            OnOutput?.Invoke(parsedOutput);
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            StopAllProcesses();
+            await Task.CompletedTask;
+        }
 
         public async Task<int> ExecuteCommand(string command)
         {
@@ -33,14 +58,38 @@ namespace KodeRunner
 
             process.Exited += (sender, args) =>
             {
+                ActiveProcesses.TryRemove(process.Id, out _);
                 tcs.SetResult(process.ExitCode);
                 process.Dispose();
             };
 
-            _ = process.Start();
+            process.OutputDataReceived += (sender, args) =>
+            {
+                if (args.Data != null)
+                {
+                    foreach (char c in args.Data)
+                    {
+                        SendOutput(c.ToString());
+                    }
+                }
+            };
+
+            process.ErrorDataReceived += (sender, args) =>
+            {
+                if (args.Data != null)
+                {
+                    foreach (char c in args.Data)
+                    {
+                        SendOutput(c.ToString());
+                    }
+                }
+            };
+
+            process.Start();
+            ActiveProcesses.TryAdd(process.Id, process);
 
             // Read standard output asynchronously
-            _ = Task.Run(async () =>
+           _ = Task.Run(async () =>
             {
                 var buffer = new char[1];
                 while (!process.StandardOutput.EndOfStream)
@@ -48,13 +97,13 @@ namespace KodeRunner
                     int read = await process.StandardOutput.ReadAsync(buffer, 0, buffer.Length);
                     if (read > 0)
                     {
-                        OnOutput?.Invoke(new string(buffer, 0, read));
+                        OnOutput?.Invoke(buffer[0].ToString());
                     }
                 }
             });
 
             // Read standard error asynchronously
-            _ = Task.Run(async () =>
+           _ = Task.Run(async () =>
             {
                 var buffer = new char[1];
                 while (!process.StandardError.EndOfStream)
@@ -62,7 +111,7 @@ namespace KodeRunner
                     int read = await process.StandardError.ReadAsync(buffer, 0, buffer.Length);
                     if (read > 0)
                     {
-                        OnOutput?.Invoke(new string(buffer, 0, read));
+                        OnOutput?.Invoke( buffer[0].ToString());
                     }
                 }
             });
@@ -70,6 +119,27 @@ namespace KodeRunner
             await process.WaitForExitAsync();
 
             return await tcs.Task;
+        }
+
+        // Add static method to stop all processes
+        public static void StopAllProcesses()
+        {
+            foreach (var processEntry in ActiveProcesses)
+            {
+                try
+                {
+                    var process = processEntry.Value;
+                    if (!process.HasExited)
+                    {
+                        process.Kill(true); // Force kill the process and its children
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error stopping process {processEntry.Key}: {ex.Message}");
+                }
+            }
+            ActiveProcesses.Clear();
         }
     }
 }

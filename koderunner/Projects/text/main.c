@@ -17,7 +17,7 @@ Project: text
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
 int main() {
-    char *message = "Hello, World! KodeRunner 3.0 is allmost here!";
+    char *message = "Stutters is epic and awsome and https://soundcloud.com/Stutters";
     int i;
 
     // See the random number generator
@@ -44,7 +44,7 @@ int main() {
         fflush(stdout); // Ensure the character is printed immediately
 
         // Pause for 0.5 seconds (500000 microseconds)
-        usleep(500000); // usleep is in microseconds, 500000 microseconds = 0.5 seconds
+        usleep(50000); // usleep is in microseconds, 500000 microseconds = 0.5 seconds
     }
 
     // Reset color back to normal at the end

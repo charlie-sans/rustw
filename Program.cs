@@ -93,6 +93,9 @@ namespace KodeRunner
                         case "/PMS":
                             _ = HandlePmsWebSocket(wsContext.WebSocket);
                             break;
+                        case "/stop":
+                            _ = HandleStopWebSocket(wsContext.WebSocket);
+                            break;
                         default:
                             Console.WriteLine($"Invalid endpoint: {path}");
                             break;
@@ -341,6 +344,54 @@ namespace KodeRunner
                 activeConnections.Remove("PMS");
             }
 
+        }
+
+        static async Task HandleStopWebSocket(WebSocket webSocket)
+        {
+            Console.WriteLine("Stop endpoint connected");
+            try
+            {
+                activeConnections["stop"] = webSocket;
+                var buffer = new byte[1024];
+
+                while (webSocket.State == WebSocketState.Open)
+                {
+                    var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+
+                    if (result.MessageType == WebSocketMessageType.Close)
+                    {
+                        await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
+                        activeConnections.Remove("stop");
+                        break;
+                    }
+
+                    if (result.MessageType == WebSocketMessageType.Text)
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            await memoryStream.WriteAsync(buffer, 0, result.Count);
+                            var message = await ReadFromMemoryStream(memoryStream);
+                            var messageDict = JsonConvert.DeserializeObject<Dictionary<string, bool>>(message);
+
+                            if (messageDict.TryGetValue("stopped", out bool shouldStop) && shouldStop)
+                            {
+                                Console.WriteLine("Stopping all processes...");
+                                TerminalProcess.StopAllProcesses();
+                                
+                                // Send confirmation back to client
+                                var response = JsonConvert.SerializeObject(new { stopped = true, message = "All processes stopped" });
+                                var responseBytes = Encoding.UTF8.GetBytes(response);
+                                await webSocket.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"WebSocket error: {ex.Message}");
+                activeConnections.Remove("stop");
+            }
         }
     }
 }

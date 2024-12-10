@@ -55,7 +55,12 @@ namespace KodeRunner
                 .Where(type => typeof(IRunnable).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
                 .Select(type => (IRunnable)Activator.CreateInstance(type))
                 .ToList();
-
+            if (runnables.Count == 0)
+            {
+                // register the runables inside the directory
+                LoadRunnablesFromDirectory("Runnables");
+        
+            }
             foreach (var runnable in runnables)
             {
                 var attribute = runnable.GetType().GetCustomAttribute<RunnableAttribute>();

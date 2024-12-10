@@ -1,0 +1,9 @@
+koderunner
+bin/
+obj/
+*.userprefs
+*.suo
+*.user
+*.sln.docstates
+*.suo
+*.userprefs

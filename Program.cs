@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using KodeRunner;
+using System.Reflection.Metadata;
 
 namespace KodeRunner
 {
@@ -17,6 +18,8 @@ namespace KodeRunner
     class Program
     {
         static Dictionary<string, WebSocket> activeConnections = new Dictionary<string, WebSocket>();
+        static TerminalProcess terminalProcess = new TerminalProcess();
+        
         public static List<string> CommentRegexes = new List<string>
         {
             @"^#.*$",
@@ -96,6 +99,10 @@ namespace KodeRunner
                         case "/stop":
                             _ = HandleStopWebSocket(wsContext.WebSocket);
                             break;
+                        case "/terminput":
+                            // handle terminal input
+                            _ = HandleTerminalInput(wsContext.WebSocket);
+                            break;
                         default:
                             Console.WriteLine($"Invalid endpoint: {path}");
                             break;
@@ -104,7 +111,45 @@ namespace KodeRunner
             }
         }
 
+        static async Task HandleTerminalInput(WebSocket webSocket)
+        {
+            Console.WriteLine("Terminal input endpoint connected");
+            try
+            {
+                activeConnections["terminput"] = webSocket;
+                var buffer = new byte[8192];
 
+                while (webSocket.State == WebSocketState.Open)
+                {
+                    var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+
+                    if (result.MessageType == WebSocketMessageType.Close)
+                    {
+                        await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
+                        activeConnections.Remove("terminput");
+                        break;
+                    }
+
+                    if (result.MessageType == WebSocketMessageType.Text)
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            await memoryStream.WriteAsync(buffer, 0, result.Count);
+                            memoryStream.Seek(0, SeekOrigin.Begin);
+                            var message = await ReadFromMemoryStream(memoryStream);
+                            Console.WriteLine($"Received message: {message}");
+                            Console.WriteLine(terminalProcess.SendInput(message));
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"WebSocket error: {ex.Message}");
+                activeConnections.Remove("terminput");
+                runnableManager.LoadRunnables();
+            }
+        }
         static async Task HandleCodeWebSocket(WebSocket webSocket)
         {
             Console.WriteLine("Code endpoint connected");
@@ -205,6 +250,7 @@ namespace KodeRunner
             catch (Exception ex)
             {
                 Console.WriteLine($"WebSocket error: {ex.Message}");
+                runnableManager.LoadRunnables();
                 activeConnections.Remove("code");
             }
         }
@@ -342,6 +388,7 @@ namespace KodeRunner
             {
                 Console.WriteLine($"WebSocket error: {ex.Message}");
                 activeConnections.Remove("PMS");
+                runnableManager.LoadRunnables();
             }
 
         }
@@ -367,13 +414,13 @@ namespace KodeRunner
 
                     if (result.MessageType == WebSocketMessageType.Text)
                     {
-                        using (var memoryStream = new MemoryStream())
+                        await using (var memoryStream = new MemoryStream())
                         {
-                            await memoryStream.WriteAsync(buffer, 0, result.Count);
+                            await memoryStream.WriteAsync(buffer.AsMemory(0, result.Count), CancellationToken.None);
                             var message = await ReadFromMemoryStream(memoryStream);
                             var messageDict = JsonConvert.DeserializeObject<Dictionary<string, bool>>(message);
 
-                            if (messageDict.TryGetValue("stopped", out bool shouldStop) && shouldStop)
+                            if (messageDict != null && messageDict.TryGetValue("stopped", out bool shouldStop) && shouldStop)
                             {
                                 Console.WriteLine("Stopping all processes...");
                                 TerminalProcess.StopAllProcesses();
@@ -390,6 +437,7 @@ namespace KodeRunner
             catch (Exception ex)
             {
                 Console.WriteLine($"WebSocket error: {ex.Message}");
+                runnableManager.LoadRunnables();
                 activeConnections.Remove("stop");
             }
         }

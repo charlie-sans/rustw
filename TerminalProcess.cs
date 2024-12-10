@@ -30,6 +30,27 @@ namespace KodeRunner
             OnOutput?.Invoke(parsedOutput);
         }
 
+        public bool SendInput(string input)
+        {
+            if (ActiveProcesses.Count == 0) return false;
+
+            try 
+            {
+                var process = ActiveProcesses[ActiveProcesses.Keys.First()];
+                if (process.StartInfo.RedirectStandardInput)
+                {
+                    process.StandardInput.WriteLine(input);
+                    process.StandardInput.Flush();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         public async ValueTask DisposeAsync()
         {
             StopAllProcesses();
@@ -48,12 +69,15 @@ namespace KodeRunner
                     Arguments = $"-c \"{command}\"",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
+                    RedirectStandardInput = true, // Add this line
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     StandardOutputEncoding = Encoding.UTF8,
                     StandardErrorEncoding = Encoding.UTF8,
+                    
                 },
                 EnableRaisingEvents = true
+                
             };
 
             process.Exited += (sender, args) =>

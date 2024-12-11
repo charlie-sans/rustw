@@ -5,6 +5,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using KodeRunner;
+using Tuvalu.logger;
 namespace KodeRunner
 {
    #region StartBuildProcess
@@ -88,10 +89,12 @@ namespace KodeRunner
             if (!Directory.Exists(Cpath))
             {
                 Directory.CreateDirectory(Cpath);
+                Logger.Log(Core.LoggerHandle + "created Code path");
             }
             if (!Directory.Exists(Bpath))
             {
                 Directory.CreateDirectory(Bpath);
+                Logger.Log(Core.LoggerHandle + "Created 
             }
             if (!Directory.Exists(Tpath))
             {

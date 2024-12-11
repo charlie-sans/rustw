@@ -15,6 +15,7 @@ namespace KodeRunner
         public static string RootDir = Path.Combine(Directory.GetCurrentDirectory(), "koderunner");
         
         // All other directories are now relative to RootDir
+        public static string LoggerHandle = "[KodeRunner]: ";
         public static string CodeDir = "Projects";
         public static string BuildDir = "Builds";
         public static string TempDir = "Temp";

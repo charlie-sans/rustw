@@ -105,11 +105,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/charlie/git/KodeRunner/KodeRunner.csproj",
+      "projectUniqueName": "/home/charlie/Documents/rustw/KodeRunner.csproj",
       "projectName": "KodeRunner",
-      "projectPath": "/home/charlie/git/KodeRunner/KodeRunner.csproj",
+      "projectPath": "/home/charlie/Documents/rustw/KodeRunner.csproj",
       "packagesPath": "/home/charlie/.nuget/packages/",
-      "outputPath": "/home/charlie/git/KodeRunner/obj/",
+      "outputPath": "/home/charlie/Documents/rustw/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/charlie/.nuget/NuGet/NuGet.Config"
@@ -130,6 +130,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -160,18 +165,12 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[8.0.10, 8.0.10]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.110/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.404/PortableRuntimeIdentifierGraph.json"
       }
     }
   },

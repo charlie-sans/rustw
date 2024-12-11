@@ -1,6 +1,8 @@
 koderunner
 bin/
 obj/
+obj
+bin
 *.userprefs
 *.suo
 *.user

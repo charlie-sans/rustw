@@ -13,7 +13,7 @@ namespace KodeRunner
 
         // Base directory for all KodeRunner files
         public static string RootDir = Path.Combine(Directory.GetCurrentDirectory(), "koderunner");
-        
+
         // All other directories are now relative to RootDir
         public static string LoggerHandle = "[KodeRunner]: ";
         public static string CodeDir = "Projects";
@@ -23,7 +23,7 @@ namespace KodeRunner
         public static string LogDir = "Logs";
         public static string ConfigDir = "Config";
         public static string ConfigFile = "config.json";
-        
+
         // Updated to use Path.Combine for proper path construction
         public static string ConfigPath = Path.Combine(RootDir, ConfigDir, ConfigFile);
         public static string RunnableDir = Path.Combine(RootDir, "Runnables");

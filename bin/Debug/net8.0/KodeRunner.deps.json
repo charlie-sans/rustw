@@ -8,12 +8,21 @@
     ".NETCoreApp,Version=v8.0": {
       "KodeRunner/1.0.0": {
         "dependencies": {
+          "dotenv.net": "3.2.1",
           "Expect.NET": "2.0.1",
           "Newtonsoft.Json": "13.0.3",
           "WebSocketSharp": "1.0.3-rc11"
         },
         "runtime": {
           "KodeRunner.dll": {}
+        }
+      },
+      "dotenv.net/3.2.1": {
+        "runtime": {
+          "lib/netstandard2.1/dotenv.net.dll": {
+            "assemblyVersion": "3.2.1.0",
+            "fileVersion": "3.2.1.0"
+          }
         }
       },
       "Expect.NET/2.0.1": {
@@ -47,6 +56,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "dotenv.net/3.2.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-2fc2s5PH6wAoWQ8bpyVgz28y9qMs/t8ToiCKqSM6mWpjgg4QQSPtZ0nia0x/OebGLSDbxyOelVH+fULZH7N4mA==",
+      "path": "dotenv.net/3.2.1",
+      "hashPath": "dotenv.net.3.2.1.nupkg.sha512"
     },
     "Expect.NET/2.0.1": {
       "type": "package",

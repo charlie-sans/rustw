@@ -5,16 +5,21 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using KodeRunner;
+<<<<<<< HEAD
 using Tuvalu.logger;
+=======
+
+>>>>>>> 3b45ddc (forgot the html files which we realy need)
 namespace KodeRunner
 {
-   #region StartBuildProcess
+    #region StartBuildProcess
     public class BuildProcess : IRunnable, IDisposable, IAsyncDisposable
     {
         public string Name => "Build Process";
         public string Language => "ANY";
         public int Priority => 9999999;
-        public string description => "Executes build process for all languages that have been registered for IRunnable";
+        public string description =>
+            "Executes build process for all languages that have been registered for IRunnable";
 
         private readonly Process _process;
         public event Action<string> OnOutput;
@@ -29,37 +34,50 @@ namespace KodeRunner
             @"^<!--.*-->$",
             @"^/\*.*\*/$",
             @"^;.*$",
-            @"^--"
+            @"^--",
+            @"^REM.*$",
+            @"^::.*$",
+            @"^@REM.*$",
+            @"^@ECHO.*$",
+            @"^@.*$",
+            @"^#.*$",
+            @"^//.*$",
+            @"^/\*.*\*/$",
+            @"^<!--.*-->$",
         };
+
         public BuildProcess()
         {
             _process = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = "/bin/bash", // Use "cmd.exe" for Windows
+                    FileName = OperatingSystem.IsWindows() ? "powershell.exe" : "./bash",
                     UseShellExecute = false,
                     RedirectStandardInput = true,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
-                    CreateNoWindow = false
-                }
+                    CreateNoWindow = false,
+                },
             };
 
             _process.Start();
             StartOutputReader();
         }
+
         public void Dispose()
         {
             _process.Kill();
             _process.Dispose();
         }
+
         public async ValueTask DisposeAsync()
         {
             _process.Kill();
             _process.Dispose();
             await Task.CompletedTask;
         }
+
         private void StartOutputReader()
         {
             Task.Run(async () =>
@@ -67,7 +85,11 @@ namespace KodeRunner
                 var buffer = new byte[1024];
                 while (!_process.HasExited)
                 {
-                    int read = await _process.StandardOutput.BaseStream.ReadAsync(buffer, 0, buffer.Length);
+                    int read = await _process.StandardOutput.BaseStream.ReadAsync(
+                        buffer,
+                        0,
+                        buffer.Length
+                    );
                     if (read > 0)
                     {
                         string output = System.Text.Encoding.UTF8.GetString(buffer, 0, read);
@@ -79,15 +101,19 @@ namespace KodeRunner
 
         public void SetupCodeDir()
         {
-            string Cpath = Path.Combine(Core.RootDir, Core.CodeDir);
-            string Bpath = Path.Combine(Core.RootDir, Core.BuildDir);
-            string Tpath = Path.Combine(Core.RootDir, Core.TempDir);
-            string Opath = Path.Combine(Core.RootDir, Core.OutputDir);
-            string Lpath = Path.Combine(Core.RootDir, Core.LogDir);
-            string Rpath = Path.Combine(Core.RootDir, Core.RunnableDir);
-
-            if (!Directory.Exists(Cpath))
+            var directories = new List<string>
             {
+                Core.CodeDir,
+                Core.BuildDir,
+                Core.TempDir,
+                Core.OutputDir,
+                Core.LogDir,
+                Core.RunnableDir,
+            };
+
+            foreach (var dir in directories)
+            {
+<<<<<<< HEAD
                 Directory.CreateDirectory(Cpath);
                 Logger.Log(Core.LoggerHandle + "created Code path");
             }
@@ -114,17 +140,25 @@ namespace KodeRunner
             }
             
 
+=======
+                string path = Path.Combine(Core.RootDir, dir);
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+            }
+>>>>>>> 3b45ddc (forgot the html files which we realy need)
         }
 
         public async Task SendInput(string input)
         {
             await _process.StandardInput.WriteLineAsync(input);
         }
+
         public void Execute(Provider.ISettingsProvider settings)
         {
             throw new NotImplementedException();
         }
     }
-
 }
-#endregion
+    #endregion

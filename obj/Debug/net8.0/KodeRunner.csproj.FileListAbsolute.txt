@@ -18,6 +18,7 @@
 /home/charlie/git/KodeRunner/obj/Debug/net8.0/KodeRunner.pdb
 /home/charlie/git/KodeRunner/obj/Debug/net8.0/KodeRunner.genruntimeconfig.cache
 /home/charlie/git/KodeRunner/obj/Debug/net8.0/ref/KodeRunner.dll
+<<<<<<< HEAD
 /home/charlie/Documents/rustw/bin/Debug/net8.0/KodeRunner
 /home/charlie/Documents/rustw/bin/Debug/net8.0/KodeRunner.deps.json
 /home/charlie/Documents/rustw/bin/Debug/net8.0/KodeRunner.runtimeconfig.json
@@ -38,3 +39,6 @@
 /home/charlie/Documents/rustw/obj/Debug/net8.0/KodeRunner.pdb
 /home/charlie/Documents/rustw/obj/Debug/net8.0/KodeRunner.genruntimeconfig.cache
 /home/charlie/Documents/rustw/obj/Debug/net8.0/ref/KodeRunner.dll
+=======
+/home/charlie/git/KodeRunner/bin/Debug/net8.0/dotenv.net.dll
+>>>>>>> 3b45ddc (forgot the html files which we realy need)

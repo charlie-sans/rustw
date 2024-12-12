@@ -1,9 +1,14 @@
 {
   "version": 2,
+<<<<<<< HEAD
   "dgSpecHash": "aMdKRDf3fZk=",
+=======
+  "dgSpecHash": "tMkCnjyWuzlUsaWmDVrieUjWPy2YItDC/px9gXtI6KKTorLqxnPvmTLsRUougDGPckfZl7e9sm5JezRwaWsQPg==",
+>>>>>>> 3b45ddc (forgot the html files which we realy need)
   "success": true,
   "projectFilePath": "/home/charlie/Documents/rustw/KodeRunner.csproj",
   "expectedPackageFiles": [
+    "/home/charlie/.nuget/packages/dotenv.net/3.2.1/dotenv.net.3.2.1.nupkg.sha512",
     "/home/charlie/.nuget/packages/expect.net/2.0.1/expect.net.2.0.1.nupkg.sha512",
     "/home/charlie/.nuget/packages/newtonsoft.json/13.0.3/newtonsoft.json.13.0.3.nupkg.sha512",
     "/home/charlie/.nuget/packages/websocketsharp/1.0.3-rc11/websocketsharp.1.0.3-rc11.nupkg.sha512"

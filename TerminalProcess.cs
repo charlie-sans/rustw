@@ -65,19 +65,17 @@ namespace KodeRunner
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = "/bin/bash",
-                    Arguments = $"-c \"{command}\"",
+                    FileName = OperatingSystem.IsWindows() ? "powershell.exe" : "./bash",
+                    Arguments = OperatingSystem.IsWindows() ? $"-Command \"{command}\"" : $"-c \"{command}\"",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
-                    RedirectStandardInput = true, // Add this line
+                    RedirectStandardInput = true,
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     StandardOutputEncoding = Encoding.UTF8,
                     StandardErrorEncoding = Encoding.UTF8,
-                    
                 },
                 EnableRaisingEvents = true
-                
             };
 
             process.Exited += (sender, args) =>

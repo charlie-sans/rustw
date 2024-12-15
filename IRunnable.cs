@@ -1,4 +1,5 @@
 using System;
+using Tuvalu.logger;
 
 namespace KodeRunner
 {
@@ -13,7 +14,6 @@ namespace KodeRunner
         string Language { get; }
         int Priority { get; }
         string description { get; }
-        
     }
     #endregion
 
@@ -33,6 +33,7 @@ namespace KodeRunner
             Name = name;
             Language = language;
             Priority = priority;
+            Logger.Log($"Registered Runnable: {name}, Language: {language}, Priority: {priority}");
         }
     }
     #endregion

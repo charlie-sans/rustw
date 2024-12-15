@@ -130,11 +130,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/charlie/Documents/rustw/KodeRunner.csproj",
+      "projectUniqueName": "/home/charlie/git/KodeRunner/KodeRunner.csproj",
       "projectName": "KodeRunner",
-      "projectPath": "/home/charlie/Documents/rustw/KodeRunner.csproj",
+      "projectPath": "/home/charlie/git/KodeRunner/KodeRunner.csproj",
       "packagesPath": "/home/charlie/.nuget/packages/",
-      "outputPath": "/home/charlie/Documents/rustw/obj/",
+      "outputPath": "/home/charlie/git/KodeRunner/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/charlie/.nuget/NuGet/NuGet.Config"
@@ -155,11 +155,6 @@
         "warnAsError": [
           "NU1605"
         ]
-      },
-      "restoreAuditProperties": {
-        "enableAudit": "true",
-        "auditLevel": "low",
-        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -194,16 +189,28 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.10, 8.0.10]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.404/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.110/PortableRuntimeIdentifierGraph.json"
       }
     }
   },
   "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Problem reading the cache file /home/charlie/git/KodeRunner/obj/project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
+    },
     {
       "code": "NU1701",
       "level": "Warning",

@@ -1,16 +1,17 @@
 using System.Buffers;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using KodeRunner;
+
 namespace Tuvalu.logger
 {
     public class Logger
@@ -19,14 +20,16 @@ namespace Tuvalu.logger
 
         static readonly string time = DateTime.Now.ToString("yyyy-MM-dd");
         static readonly string logPath = Path.Combine(Core.RootDir, Core.LogDir, $"{time}.log");
-        static readonly int restartCount = 0;
 
         static Logger()
         {
             if (File.Exists(logPath))
             {
-                restartCount = File.ReadAllLines(logPath).Count(line => line.Contains("=== Restart"));
-                AppendRestartSeparator();
+                var lastLine = File.ReadLines(logPath).LastOrDefault();
+                if (lastLine == null || !lastLine.StartsWith("=== Restart"))
+                {
+                    AppendRestartSeparator();
+                }
             }
             else
             {
@@ -36,19 +39,8 @@ namespace Tuvalu.logger
 
         private static void AppendRestartSeparator()
         {
-            // if the restart count is 0 then we just add start of program separator
-            if (restartCount == 0)
-            {
-                string separator = $"=== Start of program ===\n";
-                File.AppendAllText(logPath, separator);
-            }
-            else
-            {
-                string separator = $"=== Restart {restartCount + 1} ===\n";
-                File.AppendAllText(logPath, separator);
-            }
-            // string separator = $"=== Restart {restartCount + 1} ===\n";
-            // File.AppendAllText(logPath, separator);
+            string separator = $"=== Restart {DateTime.Now:yyyy-MM-dd HH:mm:ss} ===\n";
+            File.AppendAllText(logPath, separator);
         }
 
         public struct LogEntry
@@ -70,7 +62,7 @@ namespace Tuvalu.logger
             {
                 Message = message,
                 Level = level,
-                Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+                Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
             };
             Log(entry);
         }
@@ -86,7 +78,7 @@ namespace Tuvalu.logger
             {
                 Message = ex.Message,
                 Level = "ERROR",
-                Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+                Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
             };
             Log(entry);
         }
@@ -97,7 +89,7 @@ namespace Tuvalu.logger
             {
                 Message = $"{message}: {ex.Message}",
                 Level = "ERROR",
-                Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+                Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
             };
             Log(entry);
         }
@@ -108,7 +100,7 @@ namespace Tuvalu.logger
             {
                 Message = message,
                 Level = level,
-                Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+                Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
             };
             string logEntry = $"{entry.Timestamp} - {entry.Level}: {entry.Message}\n";
             File.AppendAllText(customLogPath, logEntry);
@@ -124,28 +116,32 @@ namespace Tuvalu.logger
             }
             finally
             {
-                _logLock.Release();
+                _ = _logLock.Release();
             }
         }
 
         public static async Task LogAsync(string message)
         {
-            await LogAsync(new LogEntry
-            {
-                Message = message,
-                Level = "INFO",
-                Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
-            });
+            await LogAsync(
+                new LogEntry
+                {
+                    Message = message,
+                    Level = "INFO",
+                    Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                }
+            );
         }
 
         public static async Task LogAsync(Exception ex)
         {
-            await LogAsync(new LogEntry
-            {
-                Message = ex.Message,
-                Level = "ERROR",
-                Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
-            });
+            await LogAsync(
+                new LogEntry
+                {
+                    Message = ex.Message,
+                    Level = "ERROR",
+                    Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                }
+            );
         }
     }
 }

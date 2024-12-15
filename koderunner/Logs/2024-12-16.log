@@ -1,0 +1,153 @@
+=== Restart 2024-12-16 06:43:38 ===
+2024-12-16 06:43:38 - INFO: Starting KodeRunner...
+2024-12-16 06:43:38 - INFO: Initializing BuildProcess...
+2024-12-16 06:43:38 - INFO: Starting output reader...
+2024-12-16 06:43:38 - INFO: BuildProcess initialized.
+2024-12-16 06:43:38 - INFO: Registered Runnable: microasm, Language: MASM, Priority: 0
+2024-12-16 06:43:38 - INFO: Registered Runnable: Language: MASM, Priority: 0
+2024-12-16 06:43:38 - INFO: Registered Runnable: dotnet, Language: csharp, Priority: 1
+2024-12-16 06:43:38 - INFO: Registered Runnable: Language: csharp, Priority: 1
+2024-12-16 06:43:38 - INFO: Registered Runnable: python, Language: python, Priority: 0
+2024-12-16 06:43:38 - INFO: Registered Runnable: Language: python, Priority: 0
+2024-12-16 06:43:38 - INFO: Registered Runnable: nodejs, Language: nodejs, Priority: 0
+2024-12-16 06:43:38 - INFO: Registered Runnable: Language: nodejs, Priority: 0
+2024-12-16 06:43:38 - INFO: Registered Runnable: c, Language: clang, Priority: 0
+2024-12-16 06:43:38 - INFO: Registered Runnable: Language: clang, Priority: 0
+2024-12-16 06:43:38 - INFO: Registered Runnable: testrunner, Language: testrunner, Priority: 0
+2024-12-16 06:43:38 - INFO: Registered Runnable: Language: testrunner, Priority: 0
+2024-12-16 06:43:38 - INFO: Server started.
+2024-12-16 06:43:38 - INFO: Initializing BuildProcess...
+2024-12-16 06:43:38 - INFO: Starting output reader...
+2024-12-16 06:43:38 - INFO: BuildProcess initialized.
+2024-12-16 06:43:38 - INFO: Setting up code directories...
+2024-12-16 06:43:40 - INFO: WebSocket connection to /code endpoint from IP: 127.0.0.1
+2024-12-16 06:43:40 - INFO: Code endpoint connected
+2024-12-16 06:43:40 - INFO: WebSocket connection to /PMS endpoint from IP: 127.0.0.1
+2024-12-16 06:43:40 - INFO: PMS endpoint connected
+2024-12-16 06:43:40 - INFO: WebSocket connection to /terminput endpoint from IP: 127.0.0.1
+2024-12-16 06:43:40 - INFO: Terminal input endpoint connected
+2024-12-16 06:43:40 - INFO: WebSocket connection to /stop endpoint from IP: 127.0.0.1
+2024-12-16 06:43:40 - INFO: Stop endpoint connected
+2024-12-16 06:43:40 - INFO: WebSocket connection to /PMS endpoint from IP: 127.0.0.1
+2024-12-16 06:43:40 - INFO: PMS endpoint connected
+2024-12-16 06:43:40 - INFO: WebSocket connection to /code endpoint from IP: 127.0.0.1
+2024-12-16 06:43:40 - INFO: Code endpoint connected
+2024-12-16 06:43:49 - INFO: WebSocket connection to /PMS endpoint from IP: 127.0.0.1
+2024-12-16 06:43:49 - INFO: PMS endpoint connected
+=== Restart 2024-12-16 06:47:20 ===
+2024-12-16 06:47:20 - INFO: Starting KodeRunner...
+2024-12-16 06:47:20 - INFO: Initializing BuildProcess...
+2024-12-16 06:47:20 - INFO: Starting output reader...
+2024-12-16 06:47:20 - INFO: BuildProcess initialized.
+2024-12-16 06:47:20 - INFO: Registered Runnable: microasm, Language: MASM, Priority: 0
+2024-12-16 06:47:20 - INFO: Registered Runnable: Language: MASM, Priority: 0
+2024-12-16 06:47:20 - INFO: Registered Runnable: dotnet, Language: csharp, Priority: 1
+2024-12-16 06:47:20 - INFO: Registered Runnable: Language: csharp, Priority: 1
+2024-12-16 06:47:20 - INFO: Registered Runnable: python, Language: python, Priority: 0
+2024-12-16 06:47:20 - INFO: Registered Runnable: Language: python, Priority: 0
+2024-12-16 06:47:20 - INFO: Registered Runnable: nodejs, Language: nodejs, Priority: 0
+2024-12-16 06:47:20 - INFO: Registered Runnable: Language: nodejs, Priority: 0
+2024-12-16 06:47:20 - INFO: Registered Runnable: c, Language: clang, Priority: 0
+2024-12-16 06:47:20 - INFO: Registered Runnable: Language: clang, Priority: 0
+2024-12-16 06:47:20 - INFO: Registered Runnable: testrunner, Language: testrunner, Priority: 0
+2024-12-16 06:47:20 - INFO: Registered Runnable: Language: testrunner, Priority: 0
+2024-12-16 06:47:20 - INFO: Server started.
+2024-12-16 06:47:20 - INFO: Initializing BuildProcess...
+2024-12-16 06:47:20 - INFO: Starting output reader...
+2024-12-16 06:47:20 - INFO: BuildProcess initialized.
+2024-12-16 06:47:20 - INFO: Setting up code directories...
+2024-12-16 06:47:24 - INFO: WebSocket connection to /code endpoint from IP: 127.0.0.1
+2024-12-16 06:47:24 - INFO: Code endpoint connected
+2024-12-16 06:47:24 - INFO: WebSocket connection to /PMS endpoint from IP: 127.0.0.1
+2024-12-16 06:47:24 - INFO: WebSocket connection to /terminput endpoint from IP: 127.0.0.1
+2024-12-16 06:47:24 - INFO: Terminal input endpoint connected
+2024-12-16 06:47:24 - INFO: WebSocket connection to /stop endpoint from IP: 127.0.0.1
+2024-12-16 06:47:24 - INFO: Stop endpoint connected
+2024-12-16 06:47:24 - INFO: WebSocket connection to /code endpoint from IP: 127.0.0.1
+2024-12-16 06:47:24 - INFO: Code endpoint connected
+2024-12-16 06:47:24 - INFO: WebSocket connection to /PMS endpoint from IP: 127.0.0.1
+2024-12-16 06:47:28 - INFO: WebSocket connection to /PMS endpoint from IP: 127.0.0.1
+2024-12-16 06:56:00 - ERROR: WebSocket error: The remote party closed the WebSocket connection without completing the close handshake.
+2024-12-16 06:56:00 - INFO: Initializing BuildProcess...
+2024-12-16 06:56:00 - INFO: Starting output reader...
+2024-12-16 06:56:00 - INFO: Starting output reader...
+2024-12-16 06:56:00 - INFO: BuildProcess initialized.
+2024-12-16 06:56:00 - INFO: BuildProcess initialized.
+2024-12-16 06:56:00 - INFO: Registered Runnable: microasm, Language: MASM, Priority: 0
+2024-12-16 06:56:00 - INFO: Registered Runnable: Language: MASM, Priority: 0
+2024-12-16 06:56:00 - INFO: Registered Runnable: Language: MASM, Priority: 0
+2024-12-16 06:56:00 - INFO: Registered Runnable: dotnet, Language: csharp, Priority: 1
+2024-12-16 06:56:00 - INFO: Registered Runnable: dotnet, Language: csharp, Priority: 1
+2024-12-16 06:56:00 - INFO: Registered Runnable: Language: csharp, Priority: 1
+2024-12-16 06:56:00 - INFO: Registered Runnable: Language: csharp, Priority: 1
+2024-12-16 06:56:00 - INFO: Registered Runnable: python, Language: python, Priority: 0
+2024-12-16 06:56:00 - INFO: Registered Runnable: python, Language: python, Priority: 0
+2024-12-16 06:56:00 - INFO: Registered Runnable: Language: python, Priority: 0
+2024-12-16 06:56:00 - INFO: Registered Runnable: Language: python, Priority: 0
+2024-12-16 06:56:00 - INFO: Registered Runnable: nodejs, Language: nodejs, Priority: 0
+2024-12-16 06:56:00 - INFO: Registered Runnable: Language: nodejs, Priority: 0
+2024-12-16 06:56:00 - INFO: Registered Runnable: Language: nodejs, Priority: 0
+2024-12-16 06:56:00 - INFO: Registered Runnable: c, Language: clang, Priority: 0
+2024-12-16 06:56:00 - INFO: Registered Runnable: c, Language: clang, Priority: 0
+2024-12-16 06:56:00 - INFO: Registered Runnable: Language: clang, Priority: 0
+2024-12-16 06:56:00 - INFO: Registered Runnable: Language: clang, Priority: 0
+2024-12-16 06:56:00 - INFO: Registered Runnable: testrunner, Language: testrunner, Priority: 0
+2024-12-16 06:56:00 - INFO: Registered Runnable: Language: testrunner, Priority: 0
+2024-12-16 06:56:00 - INFO: Registered Runnable: Language: testrunner, Priority: 0
+2024-12-16 07:59:13 - INFO: WebSocket connection to /code endpoint from IP: 127.0.0.1
+2024-12-16 07:59:13 - INFO: Code endpoint connected
+2024-12-16 07:59:14 - INFO: WebSocket connection to /PMS endpoint from IP: 127.0.0.1
+2024-12-16 07:59:14 - INFO: WebSocket connection to /terminput endpoint from IP: 127.0.0.1
+2024-12-16 07:59:14 - INFO: Terminal input endpoint connected
+2024-12-16 07:59:14 - INFO: WebSocket connection to /stop endpoint from IP: 127.0.0.1
+2024-12-16 07:59:14 - INFO: Stop endpoint connected
+2024-12-16 07:59:14 - INFO: WebSocket connection to /PMS endpoint from IP: 127.0.0.1
+2024-12-16 08:10:09 - ERROR: WebSocket error: The remote party closed the WebSocket connection without completing the close handshake.
+2024-12-16 08:10:09 - ERROR: WebSocket error: The remote party closed the WebSocket connection without completing the close handshake.
+2024-12-16 08:10:09 - INFO: Initializing BuildProcess...
+2024-12-16 08:10:09 - INFO: Initializing BuildProcess...
+2024-12-16 08:10:09 - INFO: Starting output reader...
+2024-12-16 08:10:09 - INFO: Starting output reader...
+2024-12-16 08:10:09 - INFO: BuildProcess initialized.
+2024-12-16 08:10:09 - INFO: BuildProcess initialized.
+2024-12-16 08:10:09 - INFO: Starting output reader...
+2024-12-16 08:10:09 - INFO: BuildProcess initialized.
+2024-12-16 08:10:09 - INFO: Registered Runnable: microasm, Language: MASM, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: Language: MASM, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: Language: MASM, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: Language: MASM, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: Language: MASM, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: dotnet, Language: csharp, Priority: 1
+2024-12-16 08:10:09 - INFO: Registered Runnable: dotnet, Language: csharp, Priority: 1
+2024-12-16 08:10:09 - INFO: Registered Runnable: dotnet, Language: csharp, Priority: 1
+2024-12-16 08:10:09 - INFO: Registered Runnable: Language: csharp, Priority: 1
+2024-12-16 08:10:09 - INFO: Registered Runnable: Language: csharp, Priority: 1
+2024-12-16 08:10:09 - INFO: Registered Runnable: Language: csharp, Priority: 1
+2024-12-16 08:10:09 - INFO: Registered Runnable: python, Language: python, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: python, Language: python, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: dotnet, Language: csharp, Priority: 1
+2024-12-16 08:10:09 - INFO: Registered Runnable: Language: csharp, Priority: 1
+2024-12-16 08:10:09 - INFO: Registered Runnable: Language: python, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: python, Language: python, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: nodejs, Language: nodejs, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: nodejs, Language: nodejs, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: Language: nodejs, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: Language: python, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: nodejs, Language: nodejs, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: Language: nodejs, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: Language: nodejs, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: c, Language: clang, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: Language: clang, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: c, Language: clang, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: testrunner, Language: testrunner, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: Language: testrunner, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: testrunner, Language: testrunner, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: c, Language: clang, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: Language: testrunner, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: Language: clang, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: testrunner, Language: testrunner, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: Language: testrunner, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: c, Language: clang, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: Language: clang, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: testrunner, Language: testrunner, Priority: 0
+2024-12-16 08:10:09 - INFO: Registered Runnable: Language: testrunner, Priority: 0

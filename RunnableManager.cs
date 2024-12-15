@@ -3,19 +3,32 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Tuvalu.logger;
 
 namespace KodeRunner
 {
     public class RunnableManager
     {
-        private readonly Dictionary<string, Action<Provider.ISettingsProvider>> _runnables = new Dictionary<string, Action<Provider.ISettingsProvider>>();
+        private readonly Dictionary<
+            string,
+            List<(int Priority, Action<Provider.ISettingsProvider> Action)>
+        > _runnables =
+            new Dictionary<
+                string,
+                List<(int Priority, Action<Provider.ISettingsProvider> Action)>
+            >();
 
         public void print()
         {
             foreach (var runnable in _runnables)
             {
-                var attr = runnable.Value.Method.GetCustomAttribute<RunnableAttribute>();
-                Console.WriteLine($"Language: {runnable.Key}, Name: {runnable.Value.Method.Name}, Priority: {attr?.Priority ?? 0}");
+                foreach (var (priority, action) in runnable.Value)
+                {
+                    var attr = action.Method.GetCustomAttribute<RunnableAttribute>();
+                    Console.WriteLine(
+                        $"Language: {runnable.Key}, Name: {action.Method.Name}, Priority: {priority}"
+                    );
+                }
             }
         }
 
@@ -27,8 +40,13 @@ namespace KodeRunner
                 try
                 {
                     var assembly = Assembly.LoadFrom(dllPath);
-                    var runnables = assembly.GetTypes()
-                        .Where(type => typeof(IRunnable).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
+                    var runnables = assembly
+                        .GetTypes()
+                        .Where(type =>
+                            typeof(IRunnable).IsAssignableFrom(type)
+                            && !type.IsInterface
+                            && !type.IsAbstract
+                        )
                         .Select(type => (IRunnable)Activator.CreateInstance(type))
                         .ToList();
 
@@ -37,36 +55,44 @@ namespace KodeRunner
                         var attribute = runnable.GetType().GetCustomAttribute<RunnableAttribute>();
                         if (attribute != null)
                         {
-                            RegisterRunnable(attribute.Name, runnable.Name, runnable.Execute, attribute.Priority);
+                            RegisterRunnable(
+                                attribute.Language,
+                                runnable.Execute,
+                                attribute.Priority
+                            );
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error loading assembly {dllPath}: {ex.Message}");
+                    Logger.Log($"Error loading assembly {dllPath}", ex);
                 }
             }
-        } 
+        }
 
         public void LoadRunnables()
         {
-            var runnables = AppDomain.CurrentDomain.GetAssemblies()
+            var runnables = AppDomain
+                .CurrentDomain.GetAssemblies()
                 .SelectMany(assembly => assembly.GetTypes())
-                .Where(type => typeof(IRunnable).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
+                .Where(type =>
+                    typeof(IRunnable).IsAssignableFrom(type)
+                    && !type.IsInterface
+                    && !type.IsAbstract
+                )
                 .Select(type => (IRunnable)Activator.CreateInstance(type))
                 .ToList();
             if (runnables.Count == 0)
             {
                 // register the runables inside the directory
                 LoadRunnablesFromDirectory("Runnables");
-        
             }
             foreach (var runnable in runnables)
             {
                 var attribute = runnable.GetType().GetCustomAttribute<RunnableAttribute>();
                 if (attribute != null)
                 {
-                    RegisterRunnable(attribute.Name, runnable.Name, runnable.Execute, attribute.Priority);
+                    RegisterRunnable(attribute.Language, runnable.Execute, attribute.Priority);
                 }
             }
         }
@@ -75,34 +101,52 @@ namespace KodeRunner
         {
             foreach (var runnable in _runnables)
             {
-                runnable.Value(settings);
+                foreach (var (_, action) in runnable.Value)
+                {
+                    action(settings);
+                }
             }
         }
 
-        public void ExecuteFirstMatchingLanguage(string language, Provider.ISettingsProvider settings)
+        public void ExecuteFirstMatchingLanguage(
+            string language,
+            Provider.ISettingsProvider settings
+        )
         {
-            foreach (var runnable in _runnables)
+            if (_runnables.TryGetValue(language, out var actions))
             {
-                if (runnable.Key.StartsWith(language))
-                {
-                    runnable.Value(settings);
-                    return;
-                }
+                var highestPriorityAction = actions
+                    .OrderByDescending(a => a.Priority)
+                    .FirstOrDefault();
+                highestPriorityAction.Action(settings);
+                return;
             }
             throw new KeyNotFoundException($"No runnable found for language: {language}");
         }
 
-        public void RegisterRunnable(string name, string language, Action<Provider.ISettingsProvider> action, int priority = 0, string description = null)
+        public void RegisterRunnable(
+            string language,
+            Action<Provider.ISettingsProvider> action,
+            int priority = 0
+        )
         {
-            string key = $"{language}_{name}_{priority}";
-            _runnables[key] = action;
+            if (!_runnables.ContainsKey(language))
+            {
+                _runnables[language] =
+                    new List<(int Priority, Action<Provider.ISettingsProvider> Action)>();
+            }
+            _runnables[language].Add((priority, action));
+            Logger.Log($"Registered Runnable: Language: {language}, Priority: {priority}");
         }
 
         public void Execute(string key, Provider.ISettingsProvider settings)
         {
-            if (_runnables.TryGetValue(key, out var action))
+            if (_runnables.TryGetValue(key, out var actions))
             {
-                action(settings);
+                foreach (var (_, action) in actions)
+                {
+                    action(settings);
+                }
             }
             else
             {

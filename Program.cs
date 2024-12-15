@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using dotenv.net;
 using KodeRunner;
 using Newtonsoft.Json;
+using Tuvalu.logger;
 
 namespace KodeRunner
 {
@@ -51,8 +52,20 @@ namespace KodeRunner
         static RunnableManager runnableManager = new RunnableManager();
         static Envars Envars = new Envars();
 
+        public static void NotifySubscribedUsers(string message)
+        {
+            foreach (var connection in activeConnections.Values)
+            {
+                if (connection.State == WebSocketState.Open)
+                {
+                    _ = SendWebsocketMessage(connection, message);
+                }
+            }
+        }
+
         static async Task Main(string[] args)
         {
+            Logger.Log("Starting KodeRunner...");
             var server = new HttpListener();
             DotEnv.Load(options: new DotEnvOptions(ignoreExceptions: false));
             //Console.WriteLine($"Server URL: {Envars.ServerURL}");
@@ -72,10 +85,9 @@ namespace KodeRunner
                     runnableManager.LoadRunnablesFromDirectory(Core.RunnableDir);
                 }
             }
-#if DEBUG
-            runnableManager.print();
-#endif
+
             server.Start();
+            Logger.Log("Server started.");
 
             Console.WriteLine($"KodeRunner v{Core.GetVersion()} started");
             Console.WriteLine($"PMS v{PMS_VERSION} started");
@@ -95,20 +107,35 @@ namespace KodeRunner
                     switch (path)
                     {
                         case "/code":
+                            Logger.Log(
+                                "WebSocket connection to /code endpoint from IP: "
+                                    + context.Request.RemoteEndPoint.Address
+                            );
                             _ = HandleCodeWebSocket(wsContext.WebSocket);
                             break;
                         case "/PMS":
+                            Logger.Log(
+                                "WebSocket connection to /PMS endpoint from IP: "
+                                    + context.Request.RemoteEndPoint.Address
+                            );
                             _ = HandlePmsWebSocket(wsContext.WebSocket);
                             break;
                         case "/stop":
+                            Logger.Log(
+                                "WebSocket connection to /stop endpoint from IP: "
+                                    + context.Request.RemoteEndPoint.Address
+                            );
                             _ = HandleStopWebSocket(wsContext.WebSocket);
                             break;
                         case "/terminput":
-                            // handle terminal input
+                            Logger.Log(
+                                "WebSocket connection to /terminput endpoint from IP: "
+                                    + context.Request.RemoteEndPoint.Address
+                            );
                             _ = HandleTerminalInput(wsContext.WebSocket);
                             break;
                         default:
-                            Console.WriteLine($"Invalid endpoint: {path}");
+                            Logger.Log($"Invalid endpoint: {path}");
                             break;
                     }
                 }
@@ -119,8 +146,21 @@ namespace KodeRunner
             }
         }
 
+        public static async Task SendWebsocketMessage(WebSocket webSocket, string message)
+        {
+            Logger.Log($"Sending WebSocket message: {message}");
+            var bytes = Encoding.UTF8.GetBytes(message);
+            await webSocket.SendAsync(
+                new ArraySegment<byte>(bytes),
+                WebSocketMessageType.Text,
+                true,
+                CancellationToken.None
+            );
+        }
+
         static async Task HandleHttpRequest(HttpListenerContext context)
         {
+            Logger.Log("Handling HTTP request...");
             try
             {
                 string localPath = context.Request.Url?.LocalPath ?? "/";
@@ -153,10 +193,11 @@ namespace KodeRunner
             catch (HttpListenerException)
             {
                 // Client disconnected, ignore the error
+                Logger.Log("Client disconnected.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error handling HTTP request: {ex.Message}");
+                Logger.Log("Error handling HTTP request", ex);
             }
             finally
             {
@@ -188,7 +229,9 @@ namespace KodeRunner
 
         static async Task HandleTerminalInput(WebSocket webSocket)
         {
-            Console.WriteLine("Terminal input endpoint connected");
+            Logger.Log("Terminal input endpoint connected");
+            terminalProcess.OnOutput += async (output) =>
+                await SendWebsocketMessage(webSocket, output);
             try
             {
                 activeConnections["terminput"] = webSocket;
@@ -208,7 +251,7 @@ namespace KodeRunner
                             "",
                             CancellationToken.None
                         );
-                        activeConnections.Remove("terminput");
+                        _ = activeConnections.Remove("terminput");
                         break;
                     }
 
@@ -217,7 +260,7 @@ namespace KodeRunner
                         using (var memoryStream = new MemoryStream())
                         {
                             await memoryStream.WriteAsync(buffer, 0, result.Count);
-                            memoryStream.Seek(0, SeekOrigin.Begin);
+                            _ = memoryStream.Seek(0, SeekOrigin.Begin);
                             var message = await ReadFromMemoryStream(memoryStream);
                             Console.WriteLine($"Received message: {message}");
                             Console.WriteLine(terminalProcess.SendInput(message));
@@ -227,15 +270,17 @@ namespace KodeRunner
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"WebSocket error: {ex.Message}");
-                activeConnections.Remove("terminput");
+                Logger.Log("WebSocket error", ex);
+                _ = activeConnections.Remove("terminput");
                 runnableManager.LoadRunnables();
             }
         }
 
         static async Task HandleCodeWebSocket(WebSocket webSocket)
         {
-            Console.WriteLine("Code endpoint connected");
+            Logger.Log("Code endpoint connected");
+            terminalProcess.OnOutput += async (output) =>
+                await SendWebsocketMessage(webSocket, output);
             var projectnamefound = false;
             var filenamefound = false;
             try
@@ -257,7 +302,7 @@ namespace KodeRunner
                             "",
                             CancellationToken.None
                         );
-                        activeConnections.Remove("code");
+                        _ = activeConnections.Remove("code");
                         break;
                     }
 
@@ -266,7 +311,7 @@ namespace KodeRunner
                         using (var memoryStream = new MemoryStream())
                         {
                             await memoryStream.WriteAsync(buffer, 0, result.Count);
-                            memoryStream.Seek(0, SeekOrigin.Begin);
+                            _ = memoryStream.Seek(0, SeekOrigin.Begin);
                             var message = await ReadFromMemoryStream(memoryStream);
                             var lines = message.Split('\n');
                             if (lines.Length == 0)
@@ -284,16 +329,16 @@ namespace KodeRunner
                             {
                                 if (Regex.IsMatch(line, @"^/\*.*\*/$")) // Single line block comment
                                 {
-                                    commentContent.AppendLine(line);
+                                    _ = commentContent.AppendLine(line);
                                 }
                                 else if (Regex.IsMatch(line, @"^/\*.*$")) // Start of block comment
                                 {
-                                    commentContent.AppendLine(line);
+                                    _ = commentContent.AppendLine(line);
                                     inBlockComment = true;
                                 }
                                 else if (Regex.IsMatch(line, @".*\*/$")) // End of block comment
                                 {
-                                    commentContent.AppendLine(line);
+                                    _ = commentContent.AppendLine(line);
                                     inBlockComment = false;
                                 }
                                 else if (
@@ -301,11 +346,11 @@ namespace KodeRunner
                                     || CommentRegexes.Any(regex => Regex.IsMatch(line, regex))
                                 )
                                 {
-                                    commentContent.AppendLine(line);
+                                    _ = commentContent.AppendLine(line);
                                 }
                                 else
                                 {
-                                    commentContent.AppendLine(line);
+                                    _ = commentContent.AppendLine(line);
                                 }
                             }
 
@@ -342,10 +387,15 @@ namespace KodeRunner
 
                                 if (!Directory.Exists(project_path))
                                 {
-                                    Directory.CreateDirectory(project_path);
+                                    _ = Directory.CreateDirectory(project_path);
                                 }
 
                                 File.WriteAllText(file_path, message);
+                                Console.WriteLine($"File saved to {file_path}");
+                                _ = SendWebsocketMessage(
+                                    webSocket,
+                                    $"File: {fileName} saved to {project_path}"
+                                );
                             }
                         }
                     }
@@ -353,15 +403,15 @@ namespace KodeRunner
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"WebSocket error: {ex.Message}");
+                Logger.Log("WebSocket error", ex);
                 runnableManager.LoadRunnables();
-                activeConnections.Remove("code");
+                _ = activeConnections.Remove("code");
             }
         }
 
         public static async Task<string> ReadFromMemoryStream(MemoryStream memoryStream)
         {
-            memoryStream.Seek(0, SeekOrigin.Begin);
+            _ = memoryStream.Seek(0, SeekOrigin.Begin);
             using (var reader = new StreamReader(memoryStream, Encoding.UTF8))
             {
                 return await reader.ReadToEndAsync();
@@ -529,7 +579,9 @@ namespace KodeRunner
 
         static async Task HandleStopWebSocket(WebSocket webSocket)
         {
-            Console.WriteLine("Stop endpoint connected");
+            Logger.Log("Stop endpoint connected");
+            terminalProcess.OnOutput += async (output) =>
+                await SendWebsocketMessage(webSocket, output);
             try
             {
                 activeConnections["stop"] = webSocket;
@@ -549,7 +601,7 @@ namespace KodeRunner
                             "",
                             CancellationToken.None
                         );
-                        activeConnections.Remove("stop");
+                        _ = activeConnections.Remove("stop");
                         break;
                     }
 
@@ -593,9 +645,9 @@ namespace KodeRunner
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"WebSocket error: {ex.Message}");
+                Logger.Log("WebSocket error", ex);
                 runnableManager.LoadRunnables();
-                activeConnections.Remove("stop");
+                _ = activeConnections.Remove("stop");
             }
         }
     }

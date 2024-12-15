@@ -1,16 +1,16 @@
 using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Text;
 using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace KodeRunner
 {
-    public class TerminalProcess: IAsyncDisposable
+    public class TerminalProcess : IAsyncDisposable
     {
-        #pragma warning disable CS8618
+#pragma warning disable CS8618
         public event Action<string> OnOutput;
-        #pragma warning restore CS8618
+#pragma warning restore CS8618
 
 
         // funciton to clear the buffer when the process is done
@@ -21,20 +21,23 @@ namespace KodeRunner
         }
 
         // Add static process tracking
-        private static ConcurrentDictionary<int, Process> ActiveProcesses = new ConcurrentDictionary<int, Process>();
+        private static ConcurrentDictionary<int, Process> ActiveProcesses =
+            new ConcurrentDictionary<int, Process>();
 
         private void SendOutput(string output)
         {
-            if (string.IsNullOrEmpty(output)) return;
+            if (string.IsNullOrEmpty(output))
+                return;
             var parsedOutput = TerminalCodeParser.ParseToResonite(output);
             OnOutput?.Invoke(parsedOutput);
         }
 
         public bool SendInput(string input)
         {
-            if (ActiveProcesses.Count == 0) return false;
+            if (ActiveProcesses.Count == 0)
+                return false;
 
-            try 
+            try
             {
                 var process = ActiveProcesses[ActiveProcesses.Keys.First()];
                 if (process.StartInfo.RedirectStandardInput)
@@ -66,7 +69,9 @@ namespace KodeRunner
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = OperatingSystem.IsWindows() ? "powershell.exe" : "./bash",
-                    Arguments = OperatingSystem.IsWindows() ? $"-Command \"{command}\"" : $"-c \"{command}\"",
+                    Arguments = OperatingSystem.IsWindows()
+                        ? $"-Command \"{command}\""
+                        : $"-c \"{command}\"",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     RedirectStandardInput = true,
@@ -75,7 +80,7 @@ namespace KodeRunner
                     StandardOutputEncoding = Encoding.UTF8,
                     StandardErrorEncoding = Encoding.UTF8,
                 },
-                EnableRaisingEvents = true
+                EnableRaisingEvents = true,
             };
 
             process.Exited += (sender, args) =>
@@ -111,7 +116,7 @@ namespace KodeRunner
             ActiveProcesses.TryAdd(process.Id, process);
 
             // Read standard output asynchronously
-           _ = Task.Run(async () =>
+            _ = Task.Run(async () =>
             {
                 var buffer = new char[1];
                 while (!process.StandardOutput.EndOfStream)
@@ -125,7 +130,7 @@ namespace KodeRunner
             });
 
             // Read standard error asynchronously
-           _ = Task.Run(async () =>
+            _ = Task.Run(async () =>
             {
                 var buffer = new char[1];
                 while (!process.StandardError.EndOfStream)
@@ -133,7 +138,7 @@ namespace KodeRunner
                     int read = await process.StandardError.ReadAsync(buffer, 0, buffer.Length);
                     if (read > 0)
                     {
-                        OnOutput?.Invoke( buffer[0].ToString());
+                        OnOutput?.Invoke(buffer[0].ToString());
                     }
                 }
             });

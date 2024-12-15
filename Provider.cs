@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Diagnostics;
 using System.Net.WebSockets;
+using System.Reflection;
 
 namespace KodeRunner
 {
     #region Settings
     /// <summary>
     ///  Settings provider for the runnable manager
-    /// 
+    ///
     /// </summary>
     public class Provider
     {

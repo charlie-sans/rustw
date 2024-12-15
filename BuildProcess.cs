@@ -5,11 +5,8 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using KodeRunner;
-<<<<<<< HEAD
 using Tuvalu.logger;
-=======
 
->>>>>>> 3b45ddc (forgot the html files which we realy need)
 namespace KodeRunner
 {
     #region StartBuildProcess
@@ -48,6 +45,7 @@ namespace KodeRunner
 
         public BuildProcess()
         {
+            Logger.Log("Initializing BuildProcess...");
             _process = new Process
             {
                 StartInfo = new ProcessStartInfo
@@ -61,26 +59,32 @@ namespace KodeRunner
                 },
             };
 
-            _process.Start();
+            _ = _process.Start();
             StartOutputReader();
+            Logger.Log("BuildProcess initialized.");
         }
 
         public void Dispose()
         {
+            Logger.Log("Disposing BuildProcess...");
             _process.Kill();
             _process.Dispose();
+            Logger.Log("BuildProcess disposed.");
         }
 
         public async ValueTask DisposeAsync()
         {
+            Logger.Log("Disposing BuildProcess asynchronously...");
             _process.Kill();
             _process.Dispose();
             await Task.CompletedTask;
+            Logger.Log("BuildProcess disposed asynchronously.");
         }
 
         private void StartOutputReader()
         {
-            Task.Run(async () =>
+            Logger.Log("Starting output reader...");
+            _ = Task.Run(async () =>
             {
                 var buffer = new byte[1024];
                 while (!_process.HasExited)
@@ -94,6 +98,7 @@ namespace KodeRunner
                     {
                         string output = System.Text.Encoding.UTF8.GetString(buffer, 0, read);
                         OnOutput?.Invoke(output);
+                        Logger.Log($"Output: {output}");
                     }
                 }
             });
@@ -101,6 +106,7 @@ namespace KodeRunner
 
         public void SetupCodeDir()
         {
+            Logger.Log("Setting up code directories...");
             var directories = new List<string>
             {
                 Core.CodeDir,
@@ -113,50 +119,24 @@ namespace KodeRunner
 
             foreach (var dir in directories)
             {
-<<<<<<< HEAD
-                Directory.CreateDirectory(Cpath);
-                Logger.Log(Core.LoggerHandle + "created Code path");
-            }
-            if (!Directory.Exists(Bpath))
-            {
-                Directory.CreateDirectory(Bpath);
-                Logger.Log(Core.LoggerHandle + "Created 
-            }
-            if (!Directory.Exists(Tpath))
-            {
-                Directory.CreateDirectory(Tpath);
-            }
-            if (!Directory.Exists(Opath))
-            {
-                Directory.CreateDirectory(Opath);
-            }
-            if (!Directory.Exists(Lpath))
-            {
-                Directory.CreateDirectory(Lpath);
-            }
-            if (!Directory.Exists(Rpath))
-            {
-                Directory.CreateDirectory(Rpath);
-            }
-            
-
-=======
                 string path = Path.Combine(Core.RootDir, dir);
                 if (!Directory.Exists(path))
                 {
-                    Directory.CreateDirectory(path);
+                    _ = Directory.CreateDirectory(path);
+                    Logger.Log($"Directory created: {path}");
                 }
             }
->>>>>>> 3b45ddc (forgot the html files which we realy need)
         }
 
         public async Task SendInput(string input)
         {
+            Logger.Log($"Sending input to build process: {input}");
             await _process.StandardInput.WriteLineAsync(input);
         }
 
         public void Execute(Provider.ISettingsProvider settings)
         {
+            Logger.Log("Executing build process...");
             throw new NotImplementedException();
         }
     }
